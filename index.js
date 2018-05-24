@@ -16,8 +16,10 @@ passport.use(
       clientSecret: keys.googleClientSecret,
       callbackURL: "/auth/google/callback"
     },
-    accessToken => {
-      console.log(accessToken);
+    (accessToken, refreshToken, profile, done) => {
+      console.log("Access Token: ", accessToken);
+      console.log("Refresh Token", refreshToken);
+      console.log("Profile: ", profile);
     }
   )
 ); // callbackURL is the URL which user will be redirected to after he grants permission
@@ -29,7 +31,7 @@ app.get(
   })
 );
 
-app.get("/auth/google/callback", passport.authenticate('google'))
+app.get("/auth/google/callback", passport.authenticate("google"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
