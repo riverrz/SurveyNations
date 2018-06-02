@@ -9,9 +9,17 @@ const User = mongoose.model("users"); // this just pulls out the users collectio
 // MAKE SURE passport.js IS REQUIRED AFTER User.js IN index.js
 
 // serializeUser will make a cookie for the user
-passport.serializeUser((user,done)=> { // user argument here is what we passed in done() when finding the user
+passport.serializeUser((user, done) => {
+  // user argument here is what we passed in done() when finding the user
   done(null, user.id); // user.id is the id in database , in mlab user will have _id and inside $oid , .id here used is shortcut to
   // get the id directly
+});
+
+passport.deserializeUser((id, done) => {
+  // id here is the token(cookie) which was user.id
+  User.findById(id).then(user => {
+    done(null,user);
+  });
 });
 
 passport.use(
