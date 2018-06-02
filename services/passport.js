@@ -8,6 +8,12 @@ const User = mongoose.model("users"); // this just pulls out the users collectio
 // and can be pull by this statement, this is preferred method
 // MAKE SURE passport.js IS REQUIRED AFTER User.js IN index.js
 
+// serializeUser will make a cookie for the user
+passport.serializeUser((user,done)=> { // user argument here is what we passed in done() when finding the user
+  done(null, user.id); // user.id is the id in database , in mlab user will have _id and inside $oid , .id here used is shortcut to
+  // get the id directly
+});
+
 passport.use(
   new GoogleStrategy(
     {
@@ -16,14 +22,17 @@ passport.use(
       callbackURL: "/auth/google/callback"
     },
     (accessToken, refreshToken, profile, done) => {
-      User.findOne({googleId: profile.id}).then((existingUser)=> {
+      User.findOne({ googleId: profile.id }).then(existingUser => {
         if (existingUser) {
           // already have this user in database
+          done(null, existingUser); // first argument is for any error , if no error pass null
         } else {
           // make a new record for this user
-          new User({ googleId: profile.id }).save();
+          new User({ googleId: profile.id })
+            .save()
+            .then(newUser => done(null, newUser));
         }
-      })
+      });
     }
   )
 ); // callbackURL is the URL which user will be redirected to after he grants permission
