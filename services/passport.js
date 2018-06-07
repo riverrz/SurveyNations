@@ -18,7 +18,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   // id here is the token(cookie) which was user.id
   User.findById(id).then(user => {
-    done(null,user);
+    done(null, user);
   });
 });
 
@@ -30,18 +30,16 @@ passport.use(
       callbackURL: "/auth/google/callback",
       proxy: true
     },
-    (accessToken, refreshToken, profile, done) => {
-      User.findOne({ googleId: profile.id }).then(existingUser => {
-        if (existingUser) {
-          // already have this user in database
-          done(null, existingUser); // first argument is for any error , if no error pass null
-        } else {
-          // make a new record for this user
-          new User({ googleId: profile.id })
-            .save()
-            .then(newUser => done(null, newUser));
-        }
-      });
+    async (accessToken, refreshToken, profile, done) => {
+      const existingUser = await User.findOne({ googleId: profile.id });
+
+      if (existingUser) {
+        // already have this user in database
+        return done(null, existingUser); // first argument is for any error , if no error pass null
+      }
+      // make a new record for this user
+      const newUser = await new User({ googleId: profile.id }).save();
+      done(null, newUser);
     }
   )
 ); // callbackURL is the URL which user will be redirected to after he grants permission
