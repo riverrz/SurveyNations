@@ -5,9 +5,13 @@
   "proxy": {
     "/auth/google": {
       "target": "http://localhost:5000"
+    },
+    "/api/current_user": {
+      "target": "http://localhost:5000"
     }
   },
   "dependencies": {
+    "materialize-css": "^0.100.2",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-redux": "^5.0.7",
