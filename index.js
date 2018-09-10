@@ -1,20 +1,24 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const { mongoURI } = require("./config/keys");
-const {cookieKey} = require("./config/keys");
+const { cookieKey } = require("./config/keys");
+
 require("./models/User");
 require("./services/passport"); // Since passport.js doesnt return something no need to assign to a variable
 // this will be just executed directly.
-
-const authRoutes = require("./routes/authRoutes");
 const app = express();
 
-app.use(cookieSession({
-  maxAge: 30*24*60*60*1000,
-  keys: [cookieKey]
-}));
+app.use(bodyParser.json());
+
+app.use(
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [cookieKey]
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -23,7 +27,8 @@ const PORT = process.env.PORT || 5000;
 
 mongoose.connect(mongoURI);
 
-authRoutes(app); // this passes app in the authRoutes thus app.get and app.post will work
+require("./routes/authRoutes")(app);
+require("./routes/billingRoutes")(app);
 
 app.listen(PORT, () => {
   console.log("Server has started");
