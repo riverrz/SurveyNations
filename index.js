@@ -7,6 +7,7 @@ const { mongoURI } = require("./config/keys");
 const { cookieKey } = require("./config/keys");
 
 require("./models/User");
+require("./models/Surveys");
 require("./services/passport"); // Since passport.js doesnt return something no need to assign to a variable
 // this will be just executed directly.
 const app = express();
@@ -29,6 +30,7 @@ mongoose.connect(mongoURI);
 
 require("./routes/authRoutes")(app);
 require("./routes/billingRoutes")(app);
+require("./routes/surveyRoutes")(app);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
