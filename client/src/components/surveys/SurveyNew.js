@@ -2,6 +2,7 @@
 
 import React, { Component } from "react";
 import SurveyForm from "./SurveyForm";
+import { reduxForm } from "redux-form";
 import SurveyFormReview from "./SurveyFormReview";
 
 class SurveyNew extends Component {
@@ -27,5 +28,9 @@ class SurveyNew extends Component {
     return <div>{this.renderContent()}</div>;
   }
 }
-
-export default SurveyNew;
+// Since defaut behaviour of redux-form is to destory form values when it is unmounted
+// Thus making this component also attached to surveyForm we clear out the formValues
+// in SurveyForm when this component is unmounted which is the case when Cance btn is clicked
+export default reduxForm({
+  form: "surveyForm"
+})(SurveyNew);
