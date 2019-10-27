@@ -5,7 +5,7 @@ import Payments from "./Payments";
 
 class Header extends Component {
   renderContent() {
-    switch (this.props.user) {
+    switch (this.props.auth) {
       case null:
         return;
       case false:
@@ -21,7 +21,7 @@ class Header extends Component {
               <Payments />
             </li>
             <li style={{ margin: "0 10px" }}>
-              Credits: {this.props.user.credits}
+              Credits: {this.props.auth.credits}
             </li>
             <li>
               <a href="/api/logout">Logout</a>
@@ -49,7 +49,7 @@ class Header extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.auth.user
+    auth: state.auth
   };
 };
 export default connect(mapStateToProps)(Header);
